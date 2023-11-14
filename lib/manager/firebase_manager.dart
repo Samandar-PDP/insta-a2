@@ -18,8 +18,7 @@ class FirebaseManager {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return 'Success';
-    } catch(e) {
-      debugPrint(e.toString());
+    } on FirebaseAuthException catch(e) {
       return "Error";
     }
   }

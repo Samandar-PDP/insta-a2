@@ -4,10 +4,14 @@ import 'package:auth_buttons/auth_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instagram_cl_a2/manager/firebase_manager.dart';
 
+import '../util/message.dart';
+import '../widget/loading.dart';
 import '../widget/my_button.dart';
 import '../widget/my_field.dart';
 import '../widget/password_field.dart';
+import 'main_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -25,6 +29,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isLoading = false;
 
   XFile? _xFile;
+  final _manager = FirebaseManager(); /// mana 1
+
+  void _register() { /// mana 2
+    setState(() {
+      _isLoading = true;
+    });
+    _manager.register(
+        _nameController.text,
+        _emailController.text,
+        _passwordController.text,
+        File(_xFile?.path ?? "") /// dart:io
+    ).then((value) {
+      if(value == "Success") {
+        showSuccessMessage(context, "Success");
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => const MainScreen()));
+      } else {
+        showErrorMessage(context, "Error");
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }); // then tugashi
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,14 +111,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   MyTextField(controller: _nameController, hint: 'Username'),
                   const SizedBox(height: 15,),
                   MyTextField(controller: _emailController, hint: 'Email'),
-                  const SizedBox(height: 15,),
+                  const SizedBox(height: 15),
                   MyPasswordField(controller: _passwordController, hint: 'Password'),
-                  const SizedBox(height: 30,),
-                  MyButton(
+                  const SizedBox(height: 30),
+                  _isLoading ? const Loading() : MyButton(
                     text: 'Register',
-                    onClick: () {
-
-                    },
+                    onClick: _register,
                   ),
                   const SizedBox(height: 30,),
                   GoogleAuthButton(

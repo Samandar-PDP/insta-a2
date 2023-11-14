@@ -42,6 +42,8 @@ dependencies:
   google_fonts: ^6.1.0
   auth_buttons: ^1.0.1+4
   firebase_core: ^2.22.0
+  flutter_native_splash: ^2.3.5
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -52,7 +54,23 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
+
+
+flutter_icons:
+  ios: true
+  android: true
+  image_path: assets/img/instagram.png
+
+flutter_native_splash:
+  color: "#d62976"
+  android: true
+  ios: true
+  image: assets/img/instagram.png
+  fullscreen: true
+
+android_12:
+  color: "#d62976"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -66,9 +84,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+     - assets/img/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -95,3 +112,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+
+
+
+
+
+  # flutter pub run flutter_native_splash:create
+# flutter pub run flutter_launcher_icons:main

@@ -1,7 +1,11 @@
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:instagram_cl_a2/manager/firebase_manager.dart';
+import 'package:instagram_cl_a2/screen/main_screen.dart';
 import 'package:instagram_cl_a2/screen/register_screen.dart';
+import 'package:instagram_cl_a2/util/message.dart';
+import 'package:instagram_cl_a2/widget/loading.dart';
 import 'package:instagram_cl_a2/widget/my_field.dart';
 import 'package:instagram_cl_a2/widget/password_field.dart';
 
@@ -17,11 +21,38 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  final _manager = FirebaseManager();
+  bool _isLoading = false;
+
+  void _login() {
+    setState(() {
+      _isLoading = true;
+    });
+    _manager.login(
+      _nameController.text,
+      _passwordController.text
+    ).then((value) {
+      if(value == "Success") {
+        showSuccessMessage(context, 'Success');
+        Navigator.of(context)
+            .pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+                (route) => false);
+      } else {
+        showErrorMessage(context, 'Error');
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color(0xff11347a),
@@ -33,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
           )
         ),
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Center(
             child: Stack(
               children: [
@@ -54,11 +85,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 15,),
                     MyPasswordField(controller: _passwordController, hint: 'Password'),
                     const SizedBox(height: 30,),
-                    MyButton(
+                    _isLoading ? const Loading() : MyButton(
                       text: 'Log in',
-                      onClick: (){
-
-                      },
+                      onClick: _login,
                     ),
                     const SizedBox(height: 30,),
                     GoogleAuthButton(
