@@ -13,6 +13,7 @@ class _MyPasswordFieldState extends State<MyPasswordField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: widget.controller, /// mana
       obscureText: _isVisible,
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(

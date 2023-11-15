@@ -52,9 +52,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         });
       }
     }); // then tugashi
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override

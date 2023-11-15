@@ -9,7 +9,7 @@ class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Platform.isIOS ?  /// dart:io dan bo'sin!
-    const CupertinoActivityIndicator() :
-    const CircularProgressIndicator();
+    const CupertinoActivityIndicator(color: Colors.white) :
+    const CircularProgressIndicator(color: Colors.white);
   }
 }

@@ -19,6 +19,8 @@ class FirebaseManager {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return 'Success';
     } on FirebaseAuthException catch(e) {
+      print(e.email);
+      print(e);
       return "Error";
     }
   }
@@ -37,6 +39,7 @@ class FirebaseManager {
       final newUser = {
         'uid': user.user?.uid,
         'username': username,
+        'email': email,
         'password': password,
         'image': imageUri
       };
@@ -44,7 +47,6 @@ class FirebaseManager {
       await _db.ref('users/$id').set(newUser);
       return 'Success';
     } catch(e) {
-      debugPrint(e.toString());
       return 'Error';
     }
   }
