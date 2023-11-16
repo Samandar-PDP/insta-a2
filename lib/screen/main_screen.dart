@@ -1,4 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_cl_a2/home/add_screen.dart';
+import 'package:instagram_cl_a2/home/home_screen.dart';
+import 'package:instagram_cl_a2/home/profile_screen.dart';
+import 'package:instagram_cl_a2/home/reels_screen.dart';
+import 'package:instagram_cl_a2/home/search_screen.dart';
 import 'package:instagram_cl_a2/manager/firebase_manager.dart';
 
 class MainScreen extends StatefulWidget {
@@ -10,11 +16,53 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final _manager = FirebaseManager();
+
+  final List<Widget> _screens = const [
+    HomeScreen(),
+    SearchScreen(),
+    AddScreen(),
+    ReelsScreen(),
+    ProfileScreen(),
+  ];
+
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(_manager.getUser()?.email ?? "",style: TextStyle(fontSize: 30),),
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, /// mana 3
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black38,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            label: '',
+            icon: Icon(CupertinoIcons.home)
+          ),
+          BottomNavigationBarItem(
+              label: '',
+              icon: Icon(CupertinoIcons.search)
+          ),
+          BottomNavigationBarItem(
+              label: '',
+              icon: Icon(CupertinoIcons.add_circled)
+          ),
+          BottomNavigationBarItem(
+              label: '',
+              icon: Icon(CupertinoIcons.videocam_circle)
+          ),
+          BottomNavigationBarItem(
+              label: '',
+              icon: Icon(CupertinoIcons.profile_circled)
+          ),
+        ],
       ),
     );
   }

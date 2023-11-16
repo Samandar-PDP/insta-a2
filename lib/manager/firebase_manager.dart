@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 
 class FirebaseManager {
   final _auth = FirebaseAuth.instance;
@@ -19,8 +18,6 @@ class FirebaseManager {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return 'Success';
     } on FirebaseAuthException catch(e) {
-      print(e.email);
-      print(e);
       return "Error";
     }
   }
