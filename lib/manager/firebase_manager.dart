@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+
+import '../model/fb_user.dart';
 
 class FirebaseManager {
   final _auth = FirebaseAuth.instance;
@@ -24,8 +27,9 @@ class FirebaseManager {
   Future<String> register(
       String username,
       String email,
+      String nickname, /// mana !!!
       String password,
-      File image /// dart:io dan bo'sin qo'qchar!
+      File image
       ) async {
     try {
       final fileName = DateTime.now().microsecondsSinceEpoch;
@@ -37,14 +41,32 @@ class FirebaseManager {
         'uid': user.user?.uid,
         'username': username,
         'email': email,
+        'nickname': nickname, /// mana 2 !!!
         'password': password,
         'image': imageUri
       };
-      final id = _db.ref('users').push().key;
+      final id = getUser()?.uid ?? _db.ref('users').push().key; /// mana
       await _db.ref('users/$id').set(newUser);
       return 'Success';
     } catch(e) {
       return 'Error';
     }
+  }
+ /// import qil
+  Future<FbUser> getCurrentUser() async {
+    final id = getUser()?.uid ?? "";
+    final snapshot = await _db.ref('users').child(id).get();
+    final map = snapshot.value as Map<Object?, Object?>;
+    return FbUser
+        .user(map['uid'].toString(),
+        map['image'].toString(),
+        map['username'].toString(),
+        map['email'].toString(),
+        map['password'].toString(),
+        map['nickname'].toString()
+    );
+  }
+  Future<void> logOut() async {
+    await _auth.signOut();
   }
 }

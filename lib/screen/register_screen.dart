@@ -25,26 +25,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
+  final _nickNameController = TextEditingController(); /// mana
 
   bool _isLoading = false;
 
   XFile? _xFile;
-  final _manager = FirebaseManager(); /// mana 1
+  final _manager = FirebaseManager();
 
-  void _register() { /// mana 2
+  void _register() {
     setState(() {
       _isLoading = true;
     });
     _manager.register(
         _nameController.text,
         _emailController.text,
+        _nickNameController.text, /// mana
         _passwordController.text,
-        File(_xFile?.path ?? "") /// dart:io
+        File(_xFile?.path ?? "")
     ).then((value) {
       if(value == "Success") {
         showSuccessMessage(context, "Success");
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => const MainScreen()));
+            .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const MainScreen()), (route) => false);
       } else {
         showErrorMessage(context, "Error");
         setState(() {
@@ -106,6 +108,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   const SizedBox(height: 30,),
                   MyTextField(controller: _nameController, hint: 'Username'),
+                  const SizedBox(height: 15,),
+                  MyTextField(controller: _nickNameController, hint: 'Nickname'),
                   const SizedBox(height: 15,),
                   MyTextField(controller: _emailController, hint: 'Email'),
                   const SizedBox(height: 15),
