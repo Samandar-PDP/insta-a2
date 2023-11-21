@@ -26,5 +26,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:446116851261:ios:2958f7989e247ad9a84454</string>
+	<key>DATABASE_URL</key>
+	<string>https://instaa2-daa0d-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:instagram_cl_a2/manager/firebase_manager.dart';
 import 'package:instagram_cl_a2/model/fb_user.dart';
+import 'package:instagram_cl_a2/screen/full_screen.dart';
 import 'package:instagram_cl_a2/screen/login_screen.dart';
 import 'package:instagram_cl_a2/widget/loading.dart';
 
@@ -82,38 +83,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
           IconButton(onPressed: _logOut, icon: const Icon(CupertinoIcons.power,color: Colors.red))
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        foregroundImage: NetworkImage(
-                            user?.image ?? ""
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      borderRadius: BorderRadius.circular(40), /// TODO mashiniyam yoz!
+                      onTap: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) => FullScreen(image: user?.image ?? "")));
+                      },
+                      child: Hero(
+                        tag: 'profile_image',
+                        child: CircleAvatar(
+                          radius: 40,
+                          foregroundImage: NetworkImage(
+                              user?.image ?? ""
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(user?.nickname ?? "")
-                    ],
-                  ),
-                  _buildTwoText('1','posts'),
-                  _buildTwoText('343','followers'),
-                  _buildTwoText('23','following'),
-                ],
-              )
-            ],
-          ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(user?.nickname ?? "")
+                  ],
+                ),
+                _buildTwoText('1','posts'),
+                _buildTwoText('343','followers'),
+                _buildTwoText('23','following'),
+              ],
+            )
+          ],
         ),
       ),
     );
