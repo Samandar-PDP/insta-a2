@@ -6,6 +6,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../model/fb_user.dart';
+import '../model/post.dart';
 
 class FirebaseManager {
   final _auth = FirebaseAuth.instance;
@@ -68,5 +69,41 @@ class FirebaseManager {
   }
   Future<void> logOut() async {
     await _auth.signOut();
+  }
+  Future<void> uploadPost(Post post) async {
+    final postId = _db.ref('posts').push().key;
+    final currentTime = DateTime.now().toLocal().toString();
+    final ownerId = getUser()?.uid;
+
+    /// 1
+    final imageName = DateTime.now().microsecondsSinceEpoch.toString();
+    final snapshot = await _storage.ref('post_images/$imageName').putFile(File(post.image ?? ""));
+    final imageUrl = await snapshot.ref.getDownloadURL();
+
+    ///
+
+    final newPost = {
+      'id': postId,
+      'owner_id': ownerId,
+      'time': currentTime,
+      'like_count': post.likeCount,
+      'image': imageUrl,
+      'text': post.text,
+      'image_name': imageName /// 2
+    };
+    await _db.ref('posts/$postId').set(newPost);
+  }
+
+  Future<List<Post>> getMyPosts() async {
+    final List<Post> myPostList = [];
+    final snapshot = await _db.ref('posts').get();
+    for(var map in snapshot.children) {
+      final json = map.value as Map<Object?, Object?>;
+      final post = Post.fromJson(json);
+      if(post.ownerId == getUser()?.uid) {
+        myPostList.add(post);
+      }
+    }
+    return myPostList;
   }
 }

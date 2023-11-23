@@ -105,7 +105,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     radius: 90, /// mana 3
                     foregroundImage: FileImage(File(_xFile?.path ?? "")),
                   ),
-
                   const SizedBox(height: 30,),
                   MyTextField(controller: _nameController, hint: 'Username'),
                   const SizedBox(height: 15,),

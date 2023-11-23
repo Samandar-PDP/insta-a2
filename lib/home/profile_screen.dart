@@ -120,6 +120,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildTwoText('343','followers'),
                 _buildTwoText('23','following'),
               ],
+            ),
+            const SizedBox(height: 30),
+            Expanded( /// 2
+              child: _buildMyPosts()
             )
           ],
         ),
@@ -136,6 +140,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
         const SizedBox(height: 3),
         Text(label)
       ],
+    );
+  }
+
+  Widget _buildMyPosts() { /// 1
+    return FutureBuilder(
+      future: _manager.getMyPosts(),
+      builder: (context, snapshot) {
+        if(snapshot.hasData && snapshot.data != null) {
+          final post = snapshot.data?[0];
+          return GridView.builder(
+            itemCount: snapshot.data?.length,
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 3 / 3
+            ),
+            itemBuilder: (context, index) {
+              return Image.network(post?.image ?? "");
+            },
+          );
+        } else {
+          return const Loading();
+        }
+      },
     );
   }
 }
