@@ -12,6 +12,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Text("Reels"),
+
     );
   }
 }
