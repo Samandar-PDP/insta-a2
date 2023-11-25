@@ -33,7 +33,7 @@ class _AddScreenState extends State<AddScreen> {
       Post.post(null,
           _textController.text,
           _image?.path ?? "",
-          null, 0, null
+          null, 0, null, null
       )
     ).then((value) {
       setState(() {

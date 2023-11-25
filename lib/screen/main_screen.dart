@@ -16,6 +16,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final _manager = FirebaseManager();
+  int _selectedIndex = 0;
 
   final List<Widget> _screens = const [
     HomeScreen(),
@@ -24,8 +25,6 @@ class _MainScreenState extends State<MainScreen> {
     ReelsScreen(),
     ProfileScreen(),
   ];
-
-  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {

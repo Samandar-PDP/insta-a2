@@ -58,13 +58,19 @@ class FirebaseManager {
     final id = getUser()?.uid ?? "";
     final snapshot = await _db.ref('users').child(id).get();
     final map = snapshot.value as Map<Object?, Object?>;
+
+    final postList = await getMyPosts(); /// mashi
+
     return FbUser
         .user(map['uid'].toString(),
         map['image'].toString(),
         map['username'].toString(),
         map['email'].toString(),
         map['password'].toString(),
-        map['nickname'].toString()
+        map['nickname'].toString(),
+        postList.length,
+        int.tryParse(map['follower_count'].toString()) ?? 0,
+        int.tryParse(map['following_count'].toString()) ?? 0,
     );
   }
   Future<void> logOut() async {
@@ -75,12 +81,9 @@ class FirebaseManager {
     final currentTime = DateTime.now().toLocal().toString();
     final ownerId = getUser()?.uid;
 
-    /// 1
-    final imageName = DateTime.now().microsecondsSinceEpoch.toString();
+    final imageName = _db.ref('posts').push().key.toString();
     final snapshot = await _storage.ref('post_images/$imageName').putFile(File(post.image ?? ""));
     final imageUrl = await snapshot.ref.getDownloadURL();
-
-    ///
 
     final newPost = {
       'id': postId,
@@ -105,5 +108,9 @@ class FirebaseManager {
       }
     }
     return myPostList;
+  }
+  Future<void> deletePost(Post? post) async {
+    await _storage.ref('post_images/${post?.imageName}').delete();
+    await _db.ref('posts/${post?.id}').remove();
   }
 }
