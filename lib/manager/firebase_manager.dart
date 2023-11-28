@@ -13,6 +13,8 @@ class FirebaseManager {
   final _db = FirebaseDatabase.instance;
   final _storage = FirebaseStorage.instance;
 
+  String myImage = "";
+
   User? getUser() {
     return _auth.currentUser;
   }
@@ -33,11 +35,10 @@ class FirebaseManager {
       File image
       ) async {
     try {
+      final user = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       final fileName = DateTime.now().microsecondsSinceEpoch;
       final uploadTask = await _storage.ref('user_images/$fileName').putFile(image);
       final imageUri = await uploadTask.ref.getDownloadURL();
-      final user =
-       await _auth.createUserWithEmailAndPassword(email: email, password: password);
       final newUser = {
         'uid': user.user?.uid,
         'username': username,
@@ -59,9 +60,9 @@ class FirebaseManager {
     final snapshot = await _db.ref('users').child(id).get();
     final map = snapshot.value as Map<Object?, Object?>;
 
-    final postList = await getMyPosts(); /// mashi
+    final postList = await getMyPosts();
 
-    return FbUser
+    final user = FbUser /// 1
         .user(map['uid'].toString(),
         map['image'].toString(),
         map['username'].toString(),
@@ -72,6 +73,9 @@ class FirebaseManager {
         int.tryParse(map['follower_count'].toString()) ?? 0,
         int.tryParse(map['following_count'].toString()) ?? 0,
     );
+
+    myImage = user.image ?? ""; /// 2
+    return user; /// 3
   }
   Future<void> logOut() async {
     await _auth.signOut();
@@ -85,6 +89,8 @@ class FirebaseManager {
     final snapshot = await _storage.ref('post_images/$imageName').putFile(File(post.image ?? ""));
     final imageUrl = await snapshot.ref.getDownloadURL();
 
+    final currentUser = await getCurrentUser(); /// 1
+
     final newPost = {
       'id': postId,
       'owner_id': ownerId,
@@ -92,7 +98,9 @@ class FirebaseManager {
       'like_count': post.likeCount,
       'image': imageUrl,
       'text': post.text,
-      'image_name': imageName /// 2
+      'image_name': imageName,
+      'owner_profile_image': currentUser.image, /// 2
+      'owner_user_name': currentUser.username /// 3
     };
     await _db.ref('posts/$postId').set(newPost);
   }
@@ -118,9 +126,19 @@ class FirebaseManager {
     final snapshot = await _db.ref('users').get();
     final List<FbUser> userList = [];
     for(var map in snapshot.children) {
-      final fbUser = FbUser.fromJson(map.value as Map<String, dynamic>);
+      final fbUser = FbUser.fromJson(map.value as Map<Object?, Object?>);
       userList.add(fbUser);
     }
     return userList;
+  }
+
+  Future<List<Post>> getAllPosts() async {
+    final snapshot = await _db.ref('posts').get();
+    final List<Post> postList = [];
+    for(var map in snapshot.children) {
+      final post = Post.fromJson(map.value as Map<Object?, Object?>);
+      postList.add(post);
+    }
+    return postList;
   }
 }

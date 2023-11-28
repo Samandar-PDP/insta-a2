@@ -22,16 +22,16 @@ class FbUser {
       );
   FbUser();
 
-  FbUser.fromJson(Map<String, dynamic> json) :
-      uid = json['uid'],
-      image = json['image'],
-      email = json['email'],
-      username = json['username'],
-  nickname = json['nickname'],
-      password = json['password'],
-     postCount = json['post_count'], /// 3 tasi
-     followingCount = json['following_count'],
-     followerCount = json['follower_count'];
+  FbUser.fromJson(Map<Object?, Object?> json) :
+      uid = json['uid'].toString(),
+      image = json['image'].toString(),
+      email = json['email'].toString(),
+      username = json['username'].toString(),
+  nickname = json['nickname'].toString(),
+      password = json['password'].toString(),
+     postCount = int.tryParse(json['post_count'].toString()) ?? 0, /// 3 tasi
+     followingCount = int.tryParse(json['following_count'].toString()) ?? 0,
+     followerCount = int.tryParse(json['follower_count'].toString()) ?? 0;
 
   Map<String, dynamic> toJson() {
     return {
