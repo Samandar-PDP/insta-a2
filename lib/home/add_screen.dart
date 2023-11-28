@@ -52,8 +52,11 @@ class _AddScreenState extends State<AddScreen> {
         elevation: 0,
         title: const Text("Add Screen"),
         actions: [
-          _isLoading ? const Loading(
-            color: Colors.red,
+          _isLoading ? const Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: Loading(
+              color: Colors.red,
+            ),
           ) : CupertinoButton(
               child: const Icon(CupertinoIcons.add), onPressed: () {
                 if(_image != null && _textController.text.isNotEmpty) {

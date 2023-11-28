@@ -113,4 +113,14 @@ class FirebaseManager {
     await _storage.ref('post_images/${post?.imageName}').delete();
     await _db.ref('posts/${post?.id}').remove();
   }
+
+  Future<List<FbUser>> getAllUsers() async {
+    final snapshot = await _db.ref('users').get();
+    final List<FbUser> userList = [];
+    for(var map in snapshot.children) {
+      final fbUser = FbUser.fromJson(map.value as Map<String, dynamic>);
+      userList.add(fbUser);
+    }
+    return userList;
+  }
 }
