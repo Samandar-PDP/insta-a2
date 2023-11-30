@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:instagram_cl_a2/model/post.dart';
 
 class PostItem extends StatelessWidget {
@@ -9,13 +10,13 @@ class PostItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: Colors.white,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, /// 1
         children: [
           ListTile(
             leading: CircleAvatar(
@@ -25,17 +26,23 @@ class PostItem extends StatelessWidget {
             title: Text(post.ownerUserName ?? ""),
             trailing: const Icon(Icons.more_horiz),
           ),
-          const SizedBox(height: 10),
-          Image.network(post.image ?? "",width: double.infinity,height: 300),
-          const SizedBox(height: 10),
-          const Row(
-            children: [
-              Icon(CupertinoIcons.heart),
-              Icon(CupertinoIcons.chat_bubble),
-              Icon(CupertinoIcons.paperplane),
-              Align(alignment: AlignmentDirectional.centerEnd,child: Icon(CupertinoIcons.bookmark),)
-            ],
-          )
+          const Gap(20), /// 2
+          Image.network(post.image ?? "",width: double.infinity), /// 3
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Icon(CupertinoIcons.heart),
+                Gap(10),
+                Icon(CupertinoIcons.chat_bubble),
+                Gap(10),
+                Icon(CupertinoIcons.paperplane),
+                Expanded(child: Align(alignment:
+                AlignmentDirectional.centerEnd,child: Icon(CupertinoIcons.bookmark),))
+              ],
+            ),
+          ),
+          Text("\t\t${post.text}" ?? "")
         ],
       ),
     );

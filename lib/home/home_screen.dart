@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:instagram_cl_a2/manager/firebase_manager.dart';
 import 'package:instagram_cl_a2/widget/loading.dart';
@@ -71,8 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
         future: _manager.getMyPosts(),
         builder: (context, snapshot) {
           if(snapshot.data != null && snapshot.data?.isNotEmpty == true) {
-            return ListView.builder(
-              itemCount: snapshot.data?.length,
+            return ListView.separated(
+              separatorBuilder: (context, index) => const Gap(10),
+              itemCount: snapshot.data?.length ?? 0,
               itemBuilder: (context, index) {
                 return PostItem(post: snapshot.data![index]);
               },

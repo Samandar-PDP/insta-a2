@@ -157,7 +157,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       future: _manager.getMyPosts(),
       builder: (context, snapshot) {
         if(snapshot.hasData && snapshot.data != null) {
-          /// mashettan
           return GridView.builder(
             itemCount: snapshot.data?.length,
             shrinkWrap: true,
@@ -168,7 +167,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               childAspectRatio: 3 / 3
             ),
             itemBuilder: (context, index) {
-              /// mashetga
               final post = snapshot.data?[index]; /// index deb
               return InkWell(
                 onTap: () {
