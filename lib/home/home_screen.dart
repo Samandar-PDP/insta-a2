@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:instagram_cl_a2/chat/chat_screen.dart';
 import 'package:instagram_cl_a2/manager/firebase_manager.dart';
 import 'package:instagram_cl_a2/widget/loading.dart';
 import 'package:instagram_cl_a2/widget/post_item.dart';
@@ -42,11 +43,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: snapshot.data?.length,
                         itemBuilder: (context, index) {
                           if(index == 0) {
-                            print(_manager.myImage);
                             return _buildBox(_manager.myImage); /// mana
                           } else {
-                            return  UserStory(user: snapshot.data?[0], onClick: () {
-
+                            return  UserStory(user: snapshot.data?[index], onClick: () {
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(builder: (context) => ChatScreen(fbUser: snapshot.data?[0]))
+                              );
                             });
                           }
                         },
