@@ -6,6 +6,7 @@ class Message {
   String? image;
   int? type;
   String? time;
+  String? senderImage;
 
   Message(
       {required this.messageId,
@@ -14,7 +15,8 @@ class Message {
       required this.text,
       required this.image,
       required this.type,
-      required this.time});
+      required this.time,
+      required this.senderImage});
 
   Map<String, dynamic> toJson() {
     return {
@@ -24,7 +26,8 @@ class Message {
       'text': text,
       'image': image,
       'type': type,
-      'time': time
+      'time': time,
+      'sender_image': senderImage,
     };
   }
 
@@ -35,5 +38,6 @@ class Message {
         text = json['text'].toString(),
         image = json['image'].toString(),
         type = int.tryParse(json['type'].toString()) ?? 0,
-        time = json['time'].toString();
+        time = json['time'].toString(),
+        senderImage = json['sender_image'].toString();
 }

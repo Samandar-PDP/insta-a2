@@ -124,10 +124,13 @@ class FirebaseManager {
 
   Future<List<FbUser>> getAllUsers() async {
     final snapshot = await _db.ref('users').get();
+    final uid = _auth.currentUser?.uid;
     final List<FbUser> userList = [];
     for(var map in snapshot.children) {
       final fbUser = FbUser.fromJson(map.value as Map<Object?, Object?>);
-      userList.add(fbUser);
+      if(fbUser.uid != uid) {
+        userList.add(fbUser);
+      }
     }
     return userList;
   }

@@ -1,7 +1,17 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram_cl_a2/manager/chat_manager.dart';
+import 'package:instagram_cl_a2/manager/firebase_manager.dart';
 import 'package:instagram_cl_a2/model/fb_user.dart';
+import 'package:instagram_cl_a2/widget/loading.dart';
+import 'package:instagram_cl_a2/widget/receiver_message.dart';
+import 'package:instagram_cl_a2/widget/sender_message.dart';
 
+import '../model/message.dart';
 import '../widget/message_field.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -16,6 +26,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   final _messageController = TextEditingController();
   bool _isLoading = false;
+  final _chatManager = ChatManager();
+  final _fManager = FirebaseManager();
+  final _scrollController = ScrollController();
+  final _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -42,22 +56,72 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: FutureBuilder(
-                  
-                ),
+              child: StreamBuilder(
+                stream: _chatManager.getCurrentChatMessages(widget.fbUser?.uid),
+                builder: (context, snapshot) {
+                  if(snapshot.data != null && snapshot.data?.children.isNotEmpty == true) {
+                    final List<Message> messageList = snapshot.data!.children.map((e) => Message.fromJson(e.value as Map<Object?, Object?>)).toList();
+                    return ListView.builder(
+                      controller: _scrollController,
+                      itemCount: messageList.length,
+                      itemBuilder: (context, index) {
+                        final message = messageList[index];
+                        if(message.senderId == _fManager.getUser()?.uid) {
+                          return SenderMessage(message: message, onMessageClicked: () {}, onImageOpen: () {});
+                        } else {
+                          return ReceiverMessage(message: message);
+                        }
+                      },
+                    );
+                  } else if (snapshot.data?.children.isEmpty == true) {
+                    return const Center(child: Icon(CupertinoIcons.hand_thumbsup_fill),);
+                  } else {
+                    return const Loading();
+                  }
+                },
               ),
             ),
             MessageField( /// import
               controller: _messageController,
               isLoading: _isLoading,
-              onSendMessage: () {}, /// 1
-              onSendImage: () {}///  2
+              onSendMessage: _sendTextMessage, /// 1
+              onSendImage: _launchImage///  2
             )
           ],
         ),
       ),
     );
+  }
+
+  void _launchImage() async {
+    final image = await _picker.pickImage(source: ImageSource.gallery);
+    if(image != null) {
+      setState(() {
+        _isLoading = true;
+      });
+      _chatManager.sendImageMessage(File(image.path), widget.fbUser?.uid).then((value) {
+        setState(() {
+          _isLoading = false;
+          Future.delayed(const Duration(seconds: 1)).then((value) {
+            _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+          });
+        });
+      });
+    }
+  }
+
+  void _sendTextMessage() {
+    setState(() {
+      _isLoading = true;
+    });
+    _chatManager.sendTextMessage(_messageController.text, widget.fbUser?.uid).then((value) {
+      setState(() {
+        _isLoading = false;
+        _messageController.text = '';
+        Future.delayed(const Duration(seconds: 1)).then((value) {
+          _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+        });
+      });
+    });
   }
 }

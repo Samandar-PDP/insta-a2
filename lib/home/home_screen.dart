@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           } else {
                             return  UserStory(user: snapshot.data?[index], onClick: () {
                               Navigator.of(context).push(
-                                CupertinoPageRoute(builder: (context) => ChatScreen(fbUser: snapshot.data?[0]))
+                                CupertinoPageRoute(builder: (context) => ChatScreen(fbUser: snapshot.data?[index]))
                               );
                             });
                           }

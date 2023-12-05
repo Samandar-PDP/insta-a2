@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_cl_a2/widget/loading.dart';
 
-class MessageField extends StatelessWidget {
+class MessageField extends StatefulWidget {
   const MessageField({
     super.key,
     required this.controller,
@@ -15,9 +16,19 @@ class MessageField extends StatelessWidget {
   final void Function() onSendImage;
 
   @override
+  State<MessageField> createState() => _MessageFieldState();
+}
+
+class _MessageFieldState extends State<MessageField> {
+  @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
+      controller: widget.controller,
+      onChanged: (v) {
+        setState(() {
+
+        });
+      },
       decoration: InputDecoration(
         hintText: 'Xabar...',
         fillColor: Colors.white60,
@@ -31,13 +42,17 @@ class MessageField extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(width: 2,color: Colors.indigo)
         ),
-        suffixIcon: isLoading ? const CircularProgressIndicator() : IconButton(
-          onPressed: onSendMessage,
-          icon: const Icon(CupertinoIcons.paperplane),
+        suffixIcon: widget.isLoading ? const Loading(color: Colors.indigoAccent,) : AnimatedOpacity(
+          opacity: widget.controller.text.isNotEmpty ? 1 : 0,
+          duration: const Duration(milliseconds: 500),
+          child: IconButton(
+            onPressed: widget.onSendMessage,
+            icon: const Icon(CupertinoIcons.paperplane),
+          ),
         ),
         prefixIcon: IconButton(
           icon: const Icon(CupertinoIcons.photo),
-          onPressed: onSendImage,
+          onPressed: widget.onSendImage,
         )
       ),
     );
